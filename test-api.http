@@ -1,0 +1,35 @@
+### Health Check
+GET http://localhost:3000/health
+
+### Register a new user
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123",
+  "name": "Test User"
+}
+
+### Login
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### Get Profile (replace YOUR_TOKEN with the token from login/register)
+GET http://localhost:3000/api/auth/profile
+Authorization: Bearer YOUR_TOKEN
+
+### Update Profile (replace YOUR_TOKEN with the token from login/register)
+PUT http://localhost:3000/api/auth/profile
+Authorization: Bearer YOUR_TOKEN
+Content-Type: application/json
+
+{
+  "name": "Updated Name"
+}
+
