@@ -68,10 +68,13 @@ The backend code has been updated with new transaction execution features. **You
 #### 🚨 Required Git Commands (Run These Exactly)
 
 ```bash
-# 1. Add all new backend files to git
+# 1. Switch to the existing backend branch
+git checkout backend
+
+# 2. Add all new backend files to git
 git add backend/
 
-# 2. Create a commit with descriptive message
+# 3. Create a commit with descriptive message
 git commit -m "feat: implement smart contract transaction execution
 
 - Add real smart contract transaction execution
@@ -79,17 +82,21 @@ git commit -m "feat: implement smart contract transaction execution
 - Update transaction controller with proper error handling
 - Add give-consent API endpoint for medical consent transactions
 - Integrate mock Concordium SDK for testing blockchain interactions
-- Update routes and middleware for new transaction types"
+- Update routes and middleware for new transaction types
 
-# 3. Create and push to backend branch
-git checkout -b backend-transaction-execution
-git push origin backend-transaction-execution
+- Documentation: Added backend/docs/README.md with setup instructions
+- API: Added POST /api/transactions/give-consent endpoint
+- Testing: Include curl examples for transaction endpoints"
+
+# 4. Push to the backend branch (it will be updated)
+git push origin backend
 ```
 
 #### ✅ **Verification Steps After Git Push**
 1. Check that all backend files are committed: `git status`
-2. Verify your branch exists on GitHub: `https://github.com/Rekzz19/medshare-frontend/branches`
+2. Verify your backend branch is updated on GitHub: `https://github.com/Rekzz19/medshare-frontend/tree/backend`
 3. Confirm backend server still starts: `cd backend && npm start`
+4. Test the new API: `curl -X POST http://localhost:3000/api/transactions/give-consent ...`
 
 ---
 
