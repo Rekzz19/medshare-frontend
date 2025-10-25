@@ -148,17 +148,18 @@ function Donate() {
   ]
 
   const handleDonateClick = (cause) => {
-    if (!isAuthenticated) {
-      setSelectedCause(cause)
-      setShowLoginModal(true)
-    } else {
-      // Navigate to share form if it's the share card, otherwise wallet connection page
-      if (cause.isShare) {
-        navigate('/share-medical-info', { state: { cause } })
-      } else {
-        navigate('/connect-wallet', { state: { cause } })
-      }
-    }
+    navigate('/connect-wallet');
+    // if (!isAuthenticated) {
+    //   setSelectedCause(cause)
+    //   setShowLoginModal(true)
+    // } else {
+    //   // Navigate to share form if it's the share card, otherwise wallet connection page
+    //   if (cause.isShare) {
+    //     navigate('/share-medical-info', { state: { cause } })
+    //   } else {
+    //     navigate('/connect-wallet', { state: { cause } })
+    //   }
+    // }
   }
 
   const handleLoginRedirect = () => {

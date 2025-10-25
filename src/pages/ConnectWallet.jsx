@@ -1,284 +1,233 @@
 import { useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import Nav from '../components/Nav'
-import { useAuth } from '../context/AuthContext'
-import { Wallet, CheckCircle, ArrowLeft, Shield, Zap, Lock } from 'lucide-react'
+import { ArrowLeft, Wallet, CheckCircle } from 'lucide-react'
+import { BrowserWalletConnector } from '@concordium/wallet-connectors'
 
 function ConnectWallet() {
   const navigate = useNavigate()
-  const location = useLocation()
-  const { user } = useAuth()
-  const cause = location.state?.cause
-
-  const [selectedWallet, setSelectedWallet] = useState(null)
-  const [connecting, setConnecting] = useState(false)
-  const [connected, setConnected] = useState(false)
   const [walletAddress, setWalletAddress] = useState('')
+  const [accountName, setAccountName] = useState('')
+  const [isConnecting, setIsConnecting] = useState(false)
+  const [isConnected, setIsConnected] = useState(false)
+  const [error, setError] = useState('')
 
-  const wallets = [
-    {
-      id: 'metamask',
-      name: 'MetaMask',
-      icon: '🦊',
-      description: 'Connect using MetaMask wallet',
-      popular: true
-    },
-    {
-      id: 'walletconnect',
-      name: 'WalletConnect',
-      icon: '🔗',
-      description: 'Connect with WalletConnect protocol',
-      popular: true
-    },
-    {
-      id: 'coinbase',
-      name: 'Coinbase Wallet',
-      icon: '💼',
-      description: 'Connect using Coinbase Wallet',
-      popular: false
-    },
-    {
-      id: 'trust',
-      name: 'Trust Wallet',
-      icon: '🛡️',
-      description: 'Connect using Trust Wallet',
-      popular: false
-    },
-    {
-      id: 'phantom',
-      name: 'Phantom',
-      icon: '👻',
-      description: 'Connect using Phantom wallet',
-      popular: false
-    },
-    {
-      id: 'rainbow',
-      name: 'Rainbow',
-      icon: '🌈',
-      description: 'Connect using Rainbow wallet',
-      popular: false
+  const handleConnectWallet = async () => {
+    setIsConnecting(true)
+    setError('')
+
+    try {
+      console.log('Connecting wallet...')
+
+      // TODO: Implement Concordium wallet connection here
+      // Example structure:
+      // 1. Check if Concordium wallet extension is installed
+      // 2. Request connection to wallet
+      // 3. Get account address and details
+      // 4. Store wallet information
+
+      // Placeholder for now - you'll implement the actual connection
+      // using @concordium/wallet-connectors package
+
+      // Simulated connection for testing
+      setTimeout(() => {
+        setIsConnecting(false)
+        // Uncomment below when implementing real connection
+        // setIsConnected(true)
+        // setWalletAddress('4ZJBYQbVp3zVZyjCXfZAAYBVkJMyVj8UKUNj9ox5YqTCBdBq2M')
+        // setAccountName('My Concordium Account')
+      }, 2000)
+
+    } catch (err) {
+      console.error('Wallet connection error:', err)
+      setError(err.message || 'Failed to connect wallet')
+      setIsConnecting(false)
     }
-  ]
-
-  const handleConnectWallet = async (wallet) => {
-    setSelectedWallet(wallet.id)
-    setConnecting(true)
-
-    // Simulate wallet connection
-    setTimeout(() => {
-      setConnecting(false)
-      setConnected(true)
-      // Generate a mock wallet address
-      setWalletAddress(`0x${Math.random().toString(16).substr(2, 40)}`)
-    }, 2000)
   }
 
-  const handleProceedToDonation = () => {
-    navigate('/donate/form', { state: { cause, walletAddress } })
-  }
+  const handleSubmit = async (e) => {
+    console.log("Inside handleSubmit");
+    e.preventDefault();
 
-  if (connected) {
-    return (
-      <>
-        <Nav />
-        <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 pt-20 flex items-center justify-center p-6">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-12">
-            <div className="text-center mb-8">
-              <div className="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <CheckCircle className="w-12 h-12 text-green-600" />
-              </div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">Wallet Connected! 🎉</h1>
-              <p className="text-xl text-gray-600 mb-6">
-                Your wallet has been successfully connected to MedShare
-              </p>
-            </div>
+    if (!walletAddress.trim()) {
+      setError('Please enter your wallet address');
+      return
+    }
 
-            {/* Wallet Info */}
-            <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-8">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="text-3xl">{wallets.find(w => w.id === selectedWallet)?.icon}</div>
-                  <div>
-                    <p className="text-sm text-gray-600">Connected Wallet</p>
-                    <p className="font-bold text-gray-900">{wallets.find(w => w.id === selectedWallet)?.name}</p>
-                  </div>
-                </div>
-                <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">
-                  Active
-                </div>
-              </div>
-              <div className="bg-white rounded-lg p-3">
-                <p className="text-xs text-gray-600 mb-1">Wallet Address</p>
-                <p className="font-mono text-sm text-gray-900 break-all">{walletAddress}</p>
-              </div>
-            </div>
+    setIsConnecting(true)
+    setError('')
 
-            {/* Security Features */}
-            <div className="grid md:grid-cols-3 gap-4 mb-8">
-              <div className="text-center p-4 bg-gray-50 rounded-xl">
-                <Shield className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-                <p className="text-sm font-semibold text-gray-900">Secure</p>
-                <p className="text-xs text-gray-600">End-to-end encrypted</p>
-              </div>
-              <div className="text-center p-4 bg-gray-50 rounded-xl">
-                <Zap className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-                <p className="text-sm font-semibold text-gray-900">Fast</p>
-                <p className="text-xs text-gray-600">Instant transactions</p>
-              </div>
-              <div className="text-center p-4 bg-gray-50 rounded-xl">
-                <Lock className="w-8 h-8 text-green-600 mx-auto mb-2" />
-                <p className="text-sm font-semibold text-gray-900">Private</p>
-                <p className="text-xs text-gray-600">Your keys, your crypto</p>
-              </div>
-            </div>
+    try {
+      console.log('Step 1: Creating BrowserWalletConnector...')
 
-            {/* Action Buttons */}
-            {cause ? (
-              <div className="space-y-3">
-                <button
-                  onClick={handleProceedToDonation}
-                  className="w-full bg-linear-to-r from-blue-600 to-purple-600 text-white py-4 rounded-xl font-bold text-lg hover:from-blue-700 hover:to-purple-700 transition shadow-lg hover:shadow-xl"
-                >
-                  Proceed to Donation
-                </button>
-                <p className="text-center text-sm text-gray-600">
-                  Continue to donate to <span className="font-semibold">{cause.title}</span>
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                <button
-                  onClick={() => navigate('/donate')}
-                  className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition shadow-lg hover:shadow-xl"
-                >
-                  Choose a Cause to Support
-                </button>
-                <button
-                  onClick={() => navigate('/dashboard')}
-                  className="w-full bg-gray-100 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-200 transition"
-                >
-                  Go to Dashboard
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      </>
-    )
+      // Create the browser wallet connector
+      const connector = await BrowserWalletConnector.create();
+
+      console.log('Step 2: Connector created:', connector)
+      console.log('Step 3: Calling connect()...')
+
+      // Connect to the wallet - this returns the account address directly
+      const account = await connector.connect();
+
+      console.log('Step 4: Account received:', account)
+      console.log('Account type:', typeof account)
+
+      if (!account) {
+        throw new Error('No account selected in wallet')
+      }
+
+      // Update state with connected wallet info
+      setWalletAddress(account)
+      setIsConnected(true)
+      setIsConnecting(false)
+
+      console.log('✅ Wallet verification successful:');
+
+    } catch (error) {
+      console.error('❌ Wallet connection error:', error)
+      console.error('Error message:', error.message)
+      console.error('Error stack:', error.stack)
+
+      // Provide more helpful error messages
+      let errorMessage = error.message || 'Failed to connect wallet. Please try again.';
+
+      if (error.message && error.message.includes('another prompt is already open')) {
+        errorMessage = 'Another wallet prompt is open. Please close any open wallet popups and try again, or refresh the page.';
+      }
+
+      setError(errorMessage)
+      setIsConnecting(false)
+    }
   }
 
   return (
     <>
       <Nav />
-      <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 pt-20">
-        <div className="max-w-5xl mx-auto px-6 py-12">
-          {/* Back Button */}
-          <button
-            onClick={() => navigate('/donate')}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 transition"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            Back to Support Medical Research
-          </button>
+      <div className="min-h-screen p-6">
+        {/* Back Button */}
+        <button
+          onClick={() => navigate('/donate')}
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 transition"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          Back
+        </button>
 
-          <div className="bg-white rounded-2xl shadow-lg p-8">
-            {/* Header */}
+        {/* Success Banner */}
+        {isConnected && (
+          <div className="max-w-2xl mx-auto mb-6">
+            <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-3">
+              <div className="bg-green-100 w-10 h-10 rounded-full flex items-center justify-center shrink-0">
+                <CheckCircle className="w-6 h-6 text-green-600" />
+              </div>
+              <p className="text-green-800 font-semibold">
+                Wallet successfully connected! Your account is now verified ✓
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Centered Content */}
+        <div className="flex items-center justify-center" style={{ minHeight: 'calc(100vh - 200px)' }}>
+          <div className="bg-white rounded-2xl shadow-lg p-8 max-w-2xl w-full">
             <div className="text-center mb-8">
               <div className="bg-blue-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Wallet className="w-8 h-8 text-blue-600" />
               </div>
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Connect Your Wallet</h1>
-              <p className="text-gray-600 max-w-2xl mx-auto">
-                Connect your crypto wallet to make secure, transparent donations using blockchain technology. 
-                Your contribution will be recorded on-chain for full transparency.
+              <h1 className="text-3xl font-bold text-gray-900 mb-3">
+                Verify your identity by connecting your Concordium wallet
+              </h1>
+              <p className="text-gray-600">
+                Connect your Concordium Wallet for Web (Chrome extension) to continue
               </p>
             </div>
 
-            {/* Cause Info (if available) */}
-            {cause && (
-              <div className="bg-linear-to-br from-blue-50 to-indigo-50 rounded-xl p-6 mb-8 border border-blue-100">
-                <p className="text-sm text-gray-600 mb-2">You're supporting:</p>
-                <div className="flex items-center gap-3">
-                  {cause.icon && <cause.icon className="w-8 h-8 text-blue-600" />}
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900">{cause.title}</h3>
-                    <p className="text-sm text-gray-600">{cause.description}</p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Wallet Options */}
+            {/* Connect Button */}
             <div className="mb-8">
-              <h2 className="text-lg font-bold text-gray-900 mb-4">Choose Your Wallet</h2>
-              <div className="grid md:grid-cols-2 gap-4">
-                {wallets.map((wallet) => (
-                  <button
-                    key={wallet.id}
-                    onClick={() => handleConnectWallet(wallet)}
-                    disabled={connecting}
-                    className={`relative p-6 border-2 rounded-xl text-left transition-all ${
-                      connecting && selectedWallet === wallet.id
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-200 hover:border-blue-400 hover:bg-gray-50'
-                    } ${connecting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
-                  >
-                    {wallet.popular && (
-                      <div className="absolute top-3 right-3 bg-blue-600 text-white text-xs px-2 py-1 rounded-full font-semibold">
-                        Popular
-                      </div>
-                    )}
-                    <div className="flex items-center gap-4">
-                      <div className="text-4xl">{wallet.icon}</div>
-                      <div className="flex-1">
-                        <h3 className="font-bold text-gray-900 mb-1">{wallet.name}</h3>
-                        <p className="text-sm text-gray-600">{wallet.description}</p>
-                      </div>
-                    </div>
-                    {connecting && selectedWallet === wallet.id && (
-                      <div className="mt-4 flex items-center gap-2 text-blue-600">
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                        <span className="text-sm font-semibold">Connecting...</span>
-                      </div>
-                    )}
-                  </button>
-                ))}
+              <button
+                onClick={handleConnectWallet}
+                disabled={isConnecting}
+                className={`w-full bg-blue-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition shadow-lg hover:shadow-xl flex items-center justify-center gap-3 ${
+                  isConnecting ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+              >
+                {isConnecting ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    Connecting...
+                  </>
+                ) : (
+                  <>
+                    <Wallet className="w-5 h-5" />
+                    Connect Concordium Wallet
+                  </>
+                )}
+              </button>
+            </div>
+
+            {/* Divider */}
+            <div className="relative mb-8">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-4 bg-white text-gray-500">Or enter manually</span>
               </div>
             </div>
+
+            {/* Manual Entry Form */}
+            <form onSubmit={handleSubmit}>
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="walletAddress" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Wallet Address <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="walletAddress"
+                    value={walletAddress}
+                    onChange={(e) => setWalletAddress(e.target.value)}
+                    placeholder="4ZJBYQbVp3zVZyjCXfZAAYBVkJMyVj8UKUNj9ox5YqTCBdBq2M"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="accountName" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Account Name (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    id="accountName"
+                    value={accountName}
+                    onChange={(e) => setAccountName(e.target.value)}
+                    placeholder="My Concordium Account"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+
+                {error && (
+                  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
+                    {error}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  className="w-full bg-gray-800 text-white py-3 rounded-xl font-semibold hover:bg-gray-900 transition"
+                >
+                  Verify Wallet
+                </button>
+              </div>
+            </form>
 
             {/* Info Section */}
-            <div className="bg-gray-50 rounded-xl p-6">
-              <h3 className="font-bold text-gray-900 mb-3">Why Connect a Wallet?</h3>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">✓</span>
-                  <span><strong>Transparency:</strong> All donations are recorded on the blockchain</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">✓</span>
-                  <span><strong>Security:</strong> Your funds are protected by blockchain technology</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">✓</span>
-                  <span><strong>Rewards:</strong> Earn tokenized rewards for your contributions</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">✓</span>
-                  <span><strong>Control:</strong> You maintain full control of your assets</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* Security Notice */}
-            <div className="mt-6 flex items-start gap-3 bg-blue-50 border border-blue-200 rounded-xl p-4">
-              <Shield className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-              <div className="text-sm text-gray-700">
-                <p className="font-semibold text-gray-900 mb-1">Secure Connection</p>
-                <p>
-                  MedShare will never ask for your private keys or seed phrase. We only request 
-                  permission to view your wallet address and initiate transactions that you approve.
-                </p>
-              </div>
+            <div className="mt-8 bg-gray-50 rounded-xl p-4">
+              <p className="text-sm text-gray-600">
+                <strong className="text-gray-900">Note:</strong> Make sure you have the Concordium Wallet for Web extension installed in your Chrome browser.
+                The wallet connection will request permission to access your account address.
+              </p>
             </div>
           </div>
         </div>
